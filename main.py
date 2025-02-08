@@ -6,14 +6,21 @@ from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext, CommandHandler
 
 # 🔹 تنظیمات API
-TELEGRAM_BOT_TOKEN = "7760235869:AAFk13_tegCSS1i7vlx9uA5lnUU9cg5aebo"   # توکن ربات تلگرام
-GEMINI_API_KEY = "AIzaSyBLeyOI9D3ufPqnBn57JkAEM1vhzbp9B7Q"           # کلید API جمینای
+TELEGRAM_BOT_TOKEN = "توکن ربات تلگرام"   # توکن ربات تلگرام خود را وارد کنید
+GEMINI_API_KEY = "کلید API جمینای"       # کلید API جمینای خود را وارد کنید
 
 # 🔹 مقداردهی مدل Google Gemini
 genai.configure(api_key=GEMINI_API_KEY)
 
 # 🛑 دیکشنری برای ذخیره وضعیت کاربران (لینک و عکس)
 user_data = {}
+
+# 📌 مسیر ذخیره‌سازی موقت در Render
+TEMP_DIR = "/tmp/downloads"
+
+# ایجاد پوشه downloads اگر وجود ندارد
+if not os.path.exists(TEMP_DIR):
+    os.makedirs(TEMP_DIR)
 
 # 📌 شروع ربات - درخواست لینک
 async def start(update: Update, context: CallbackContext):
@@ -36,8 +43,6 @@ async def handle_link(update: Update, context: CallbackContext):
     user_data[user_id] = {"url": url}
     
     await update.message.reply_text("📸 لطفاً یک تصویر ارسال کنید.")
-
-
 
 # 📌 دریافت متن مقاله از سایت
 def get_page_content(url):
@@ -74,7 +79,6 @@ async def summarize_text(text):
         return f"⚠️ خطا در خلاصه‌سازی: {e}"
 
 # 📌 دریافت تصویر و ارسال نتیجه نهایی
-
 async def handle_image(update: Update, context: CallbackContext):
     user_id = update.message.chat_id
 
@@ -105,7 +109,7 @@ async def handle_image(update: Update, context: CallbackContext):
             if document.mime_type.startswith("image/"):  # بررسی اینکه فرمت فایل عکس است
                 file_path = await document.get_file()
                 file_name = f"{user_id}.jpg"
-                local_path = os.path.join("downloads", file_name)
+                local_path = os.path.join(TEMP_DIR, file_name)  # ذخیره در مسیر موقت Render
 
                 # دانلود تصویر
                 await file_path.download_to_drive(local_path)
@@ -130,7 +134,6 @@ async def handle_image(update: Update, context: CallbackContext):
         del user_data[user_id]
     else:
         await update.message.reply_text("⚠️ لطفاً ابتدا لینک را ارسال کنید.")
-
 
 # 📌 راه‌اندازی ربات
 def main():
