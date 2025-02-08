@@ -6,8 +6,8 @@ from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext, CommandHandler
 
 # 🔹 تنظیمات API
-TELEGRAM_BOT_TOKEN = "توکن ربات تلگرام"   # توکن ربات تلگرام خود را وارد کنید
-GEMINI_API_KEY = "کلید API جمینای"       # کلید API جمینای خود را وارد کنید
+TELEGRAM_BOT_TOKEN = "7760235869:AAFk13_tegCSS1i7vlx9uA5lnUU9cg5aebo"   # توکن ربات تلگرام خود را وارد کنید
+GEMINI_API_KEY = "AIzaSyBLeyOI9D3ufPqnBn57JkAEM1vhzbp9B7Q"       # کلید API جمینای خود را وارد کنید
 
 # 🔹 مقداردهی مدل Google Gemini
 genai.configure(api_key=GEMINI_API_KEY)
